@@ -46,7 +46,13 @@ public class WebCommunicator {
     }
 
     public boolean tweet (String twMessage, String twLogin, String twPswd) {
-        Tweet tw = new Tweet(twMessage, twLogin, twPswd);
+        Tweet tw = new Tweet(twMessage, twLogin, twPswd, "");
+        boolean success = tw.tweet();
+        return success;
+    }
+    
+    public boolean tweet (String twMessage, String twLogin, String twPswd, String twPin) {
+        Tweet tw = new Tweet(twMessage, twLogin, twPswd, twPin);
         boolean success = tw.tweet();
         return success;
     }
@@ -90,10 +96,16 @@ public class WebCommunicator {
         String fbPswd = "cutie777babe";
         c.postFacebookUpdate(fbMessage, fbLogin, fbPswd);
         
-        // sending tweet
+        // sending tweet, no pin required
+        // https://dev.twitter.com/docs/auth/oauth/faq
         String twMessage = "Eating breakfast! #yummy (@ IHOP) [pic]: http://4sq.com/rcgmnH ";
-        String twLogin = "cool_john@aol.com";
-        String twPswd = "qwerty";
-        c.tweet(twMessage, twLogin, twPswd);
+        String twConsumerKey = "consumerkeyfromyourapp";
+        String twConsumerSecret = "consumersecretfromyourapp";
+        c.tweet(twMessage, twConsumerKey, twConsumerSecret);
+        
+        // sending tweet, pin required
+        String twPin = "yourapppin";
+        c.tweet(twMessage, twConsumerKey, twConsumerSecret, twPin);
+        
     }
 }
