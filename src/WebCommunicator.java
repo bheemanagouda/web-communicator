@@ -1,12 +1,4 @@
 import java.util.HashMap;
-import java.util.Properties;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import communicators.Email;
 import communicators.FacebookUpdate;
 import communicators.HTTPRequest;
@@ -15,76 +7,86 @@ import communicators.Tweet;
 
 public class WebCommunicator {
 
-    public boolean sendEmail (String recipient, String subject, String message, String from, String smptHost, String username, String password) {
-    Email mail = new Email(recipient, subject, message, from, smptHost, username, password);
-    boolean success = mail.send();
-    return success;
-    }
-    
-    public boolean sendEmail (String recipient, String subject, String message, String from, String smptHost) {
-        Email mail = new Email(recipient, subject, message, from, smptHost);
+    public boolean sendEmail (String recipient, String subject, String message, String from,
+                              String smtpHost, String username, String password) {
+        Email mail = new Email(recipient, subject, message, from, smtpHost, username, password);
         boolean success = mail.send();
         return success;
-        Properties props = new Properties();
+    }
 
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication () {
-                return new PasswordAuthentication("vladimir.zavidovich@gmail.com", "565$frWdi");
-            }
-        });
-
-        try {
-            Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(from));
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
-            msg.setSubject(subject);
-            msg.setText(message);
-
-            Transport.send(msg);
-
-            System.out.println("Done");
-
-        }
-        catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-
+    public boolean sendEmail (String recipient, String subject, String message, String from,
+                              String smtpHost) {
+        Email mail = new Email(recipient, subject, message, from, smtpHost);
+        boolean success = mail.send();
+        return success;
     }
 
     public String httpGET (String url, HashMap<String, String> params) {
-        HTTPRequest get = new HTTPRequest(String url, HashMap<String, String> params, "GET");
+        HTTPRequest get = new HTTPRequest(url, params, "GET");
         String response = get.send();
         return response;
     }
 
     public String httpPOST (String url, HashMap<String, String> params) {
-        HTTPRequest post = new HTTPRequest(String url, HashMap<String, String> params, "POST");
+        HTTPRequest post = new HTTPRequest(url, params, "POST");
         String response = post.send();
         return response;
     }
-    
-    public boolean postFacebookUpdate() {
-        FacebookUpdate fb = new FacebookUpdate();
+
+    public boolean postFacebookUpdate (String fbMessage, String fbLogin, String fbPswd) {
+        FacebookUpdate fb = new FacebookUpdate(fbMessage, fbLogin, fbPswd);
         boolean success = fb.send();
         return success;
     }
 
-    public boolean tweet() {
-        Tweet tw = new Tweet();
+    public boolean tweet (String twMessage, String twLogin, String twPswd) {
+        Tweet tw = new Tweet(twMessage, twLogin, twPswd);
         boolean success = tw.send();
         return success;
     }
+
     /**
      * @param args
      */
     public static void main (String[] args) {
         WebCommunicator c = new WebCommunicator();
-        c.sendEmail("vo.zavidovych@gmail.com", "test email volodymyr", "hey body sup",
-                   "vladimir.zavidovich@gmail.com");
+
+        // smtp server doesn't require authentication
+        String recipient = "repicient@example.com";
+        String subject = "My subject";
+        String message = "My message body";
+        String from = "sender@example.com";
+        String smptHost = "smtp.mycompany.com";
+        c.sendEmail(recipient, subject, message, from, smptHost);
+
+        // smtp server requires authentication
+        smptHost = "smtp.google.com";
+        String username = "me@google.com";
+        String pswd = "myGooglePswd";
+        c.sendEmail(recipient, subject, message, from, smptHost, username, pswd);
+
+        // sending HTTP GET and POST requests
+        String url = "http://myservice.com/";
+        HashMap<String, String> params = new HashMap<String, String>() {
+            {
+                put("param1", "val1");
+                put("param2", "val2");
+                put("param3", "val3");
+            }
+        };
+        String getResponse = c.httpGET(url, params);
+        String postResponse = c.httpPOST(url, params);
+        
+        // sending FB status update
+        String fbMessage = "OMG it was so hilarious i literally died laughing #LOL #SWAG";
+        String fbLogin = "megachick@hotmail.com";
+        String fbPswd = "cutie777babe";
+        c.postFacebookUpdate(fbMessage, fbLogin, fbPswd);
+        
+        // sending tweet
+        String twMessage = "Eating breakfast! #yummy (@ IHOP) [pic]: http://4sq.com/rcgmnH ";
+        String twLogin = "cool_john@aol.com";
+        String twPswd = "qwerty";
+        c.tweet(twMessage, twLogin, twPswd);
     }
 }

@@ -22,9 +22,9 @@ public class Email implements Sendable<Boolean> {
     private Session mySession;
     private Message myMessage;
 
-    public Email (String recipient, String subject, String message, String from, String smptHost) {
+    public Email (String recipient, String subject, String message, String from, String smtpHost) {
         boolean useAuth = false;
-        initProperties(smptHost, useAuth);
+        initProperties(smtpHost, useAuth);
         mySession = Session.getInstance(myProps, null);
         try {
             makeMessage(recipient, subject, message, from);
@@ -34,10 +34,10 @@ public class Email implements Sendable<Boolean> {
         }
     }
 
-    public Email (String recipient, String subject, String message, String from, String smptHost,
+    public Email (String recipient, String subject, String message, String from, String smtpHost,
                   final String username, final String password) {
         boolean useAuth = true;
-        initProperties(smptHost, useAuth);
+        initProperties(smtpHost, useAuth);
         mySession = Session.getInstance(myProps, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication () {
                 return new PasswordAuthentication(username, password);
@@ -51,10 +51,10 @@ public class Email implements Sendable<Boolean> {
         }
     }
 
-    private void initProperties (String smptHost, Boolean useAuth) {
+    private void initProperties (String smtpHost, Boolean useAuth) {
         myProps = new Properties();
         myProps.put("mail.smtp.starttls.enable", USE_TLS.toString());
-        myProps.put("mail.smtp.host", smptHost);
+        myProps.put("mail.smtp.host", smtpHost);
         myProps.put("mail.smtp.port", SMTP_PORT.toString());
         myProps.put("mail.smtp.auth", useAuth.toString());
     }
