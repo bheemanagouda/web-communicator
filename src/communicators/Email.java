@@ -22,6 +22,16 @@ public class Email {
     private Session mySession;
     private Message myMessage;
 
+    /**
+     * Send email through TLS-enabled connection using
+     * SMTP server that doesn't require authentication.
+     * 
+     * @param recipient Recipient's email
+     * @param subject Email subject
+     * @param message Email body
+     * @param from Sender email
+     * @param smtpHost SMTP host address
+     */
     public Email (String recipient, String subject, String message, String from, String smtpHost) {
         boolean useAuth = false;
         initProperties(smtpHost, useAuth);
@@ -29,6 +39,18 @@ public class Email {
         makeMessage(recipient, subject, message, from);
     }
 
+    /**
+     * Send email through TLS-enabled connection using
+     * SMTP server that requires authentication.
+     * 
+     * @param recipient Recipient's email
+     * @param subject Email subject
+     * @param message Email body
+     * @param from Sender email
+     * @param smtpHost SMTP host address
+     * @param username SMTP authentication username
+     * @param password SMTP authentication password
+     */
     public Email (String recipient, String subject, String message, String from, String smtpHost,
                   final String username, final String password) {
         boolean useAuth = true;
@@ -41,6 +63,21 @@ public class Email {
         makeMessage(recipient, subject, message, from);
     }
 
+    /**
+     * Send specified email.
+     * 
+     * @return Returns true if email was sent successfully.
+     */
+    public boolean sendEmail () {
+        try {
+            Transport.send(myMessage);
+            return true;
+        }
+        catch (MessagingException e) {
+            throw new WebCommunicatorException(SMTP_FAIL_MSG, e.getCause());
+        }
+    }
+    
     private void initProperties (String smtpHost, Boolean useAuth) {
         myProps = new Properties();
         myProps.put("mail.smtp.starttls.enable", USE_TLS.toString());
@@ -59,16 +96,6 @@ public class Email {
         }
         catch (MessagingException e) {
             throw new WebCommunicatorException(BAD_PARAMS_MSG, e.getCause());
-        }
-    }
-
-    public boolean sendEmail () {
-        try {
-            Transport.send(myMessage);
-            return true;
-        }
-        catch (MessagingException e) {
-            throw new WebCommunicatorException(SMTP_FAIL_MSG, e.getCause());
         }
     }
 }
