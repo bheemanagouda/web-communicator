@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import communicators.Email;
 import communicators.FacebookUpdate;
-import communicators.HTTPRequest;
+import communicators.HttpRequest;
 import communicators.Tweet;
 
 
@@ -10,38 +10,44 @@ public class WebCommunicator {
     public boolean sendEmail (String recipient, String subject, String message, String from,
                               String smtpHost, String username, String password) {
         Email mail = new Email(recipient, subject, message, from, smtpHost, username, password);
-        boolean success = mail.send();
+        boolean success = mail.sendEmail();
         return success;
     }
 
     public boolean sendEmail (String recipient, String subject, String message, String from,
                               String smtpHost) {
         Email mail = new Email(recipient, subject, message, from, smtpHost);
-        boolean success = mail.send();
+        boolean success = mail.sendEmail();
         return success;
     }
 
     public String httpGET (String url, HashMap<String, String> params) {
-        HTTPRequest get = new HTTPRequest(url, params, "GET");
+        HttpRequest get = new HttpRequest(url, params, "GET");
         String response = get.send();
         return response;
     }
 
     public String httpPOST (String url, HashMap<String, String> params) {
-        HTTPRequest post = new HTTPRequest(url, params, "POST");
+        HttpRequest post = new HttpRequest(url, params, "POST");
+        String response = post.send();
+        return response;
+    }
+    
+    public String httpPUT (String url, HashMap<String, String> params) {
+        HttpRequest post = new HttpRequest(url, params, "PUT");
         String response = post.send();
         return response;
     }
 
     public boolean postFacebookUpdate (String fbMessage, String fbLogin, String fbPswd) {
         FacebookUpdate fb = new FacebookUpdate(fbMessage, fbLogin, fbPswd);
-        boolean success = fb.send();
+        boolean success = fb.postUpdate();
         return success;
     }
 
     public boolean tweet (String twMessage, String twLogin, String twPswd) {
         Tweet tw = new Tweet(twMessage, twLogin, twPswd);
-        boolean success = tw.send();
+        boolean success = tw.tweet();
         return success;
     }
 
@@ -76,6 +82,7 @@ public class WebCommunicator {
         };
         String getResponse = c.httpGET(url, params);
         String postResponse = c.httpPOST(url, params);
+        String putResponse = c.httpPUT(url, params);
         
         // sending FB status update
         String fbMessage = "OMG it was so hilarious i literally died laughing #LOL #SWAG";

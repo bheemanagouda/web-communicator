@@ -1,13 +1,12 @@
 package communicators;
 
-public class Tweet implements Sendable<Boolean> {
+public class Tweet {
 
     public Tweet (String twMessage, String twLogin, String twPswd) {
         // TODO Auto-generated constructor stub
     }
 
-    @Override
-    public Boolean send () {
+    public boolean tweet () {
         // TODO Auto-generated method stub
         return false;
     }

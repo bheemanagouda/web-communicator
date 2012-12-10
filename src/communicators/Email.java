@@ -11,12 +11,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 
-public class Email implements Sendable<Boolean> {
-    private final Integer SMTP_PORT = 587;
-    private final Boolean USE_TLS = true;
-    private final String SMTP_FAIL_MSG =
+public class Email{
+    private static final Integer SMTP_PORT = 587;
+    private static final Boolean USE_TLS = true;
+    private static final String SMTP_FAIL_MSG =
             "Could not send the message. Check SMTP host and authentication settings.";
-    private final String BAD_PARAMS_MSG = "Bad message parameters.";
+    private static final String BAD_PARAMS_MSG = "Bad message parameters.";
 
     private Properties myProps;
     private Session mySession;
@@ -73,8 +73,7 @@ public class Email implements Sendable<Boolean> {
         }
     }
 
-    @Override
-    public Boolean send () {
+    public boolean sendEmail () {
         try {
             Transport.send(myMessage);
             return true;
