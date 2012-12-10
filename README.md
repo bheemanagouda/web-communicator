@@ -5,7 +5,7 @@ Java web communication API that currently supports:
 - Sending emails via TLS-enabled connection
 - Sending HTTP requests (GET, POST, PUT)
 - Posting Facebook updates to your public wall using Graph API
-- Sending Twitter updates using Twitter OAuth 2.0
+- Sending Twitter updates using Twitter OAuth
 
 Usage
 =====
@@ -50,7 +50,7 @@ String putResponse = c.httpPUT(url, params);
 
 Facebook Status Update
 ----------------------
-Instruction on how to obtain token: http://goo.gl/NUyc2
+Instructions on how to obtain token: http://goo.gl/NUyc2
 ```java
 String fbMessage = "OMG it was so hilarious i literally died laughing #LOL #SWAG";
 String fbAccessToken = "yourfbappaccesstoken";
@@ -59,7 +59,7 @@ c.postFacebookUpdate(fbMessage, fbAccessToken);
 
 Twitter Status Update
 --------------------
-Instruction on how to obtain credentials: https://dev.twitter.com/docs/auth/oauth/faq
+Instructions on how to obtain credentials: https://dev.twitter.com/docs/auth/oauth/faq
 ```java
 // sending tweet, no pin required
 String twMessage = "Eating breakfast! #yummy (@ IHOP) [pic]: http://4sq.com/rcgmnH ";
@@ -75,4 +75,4 @@ c.tweet(twMessage, twConsumerKey, twConsumerSecret, twPin);
 Comming soon
 ============
 1. OAuth 2.0 support for sending emails via smtp.google.com
-2. Posting images and vides in Facebook Status update
+2. Posting images and videos in Facebook Status update
