@@ -14,51 +14,73 @@ import javax.mail.internet.MimeMessage;
 public class Email implements Sendable<Boolean> {
     private final Integer SMTP_PORT = 587;
     private final Boolean USE_TLS = true;
-    private final String SUCCESS_MESSAGE = "Email sent";
+    private final String SMTP_FAIL_MSG =
+            "Could not send the message. Check SMTP host and authentication settings.";
+    private final String BAD_PARAMS_MSG = "Bad message parameters.";
+
     private Properties myProps;
     private Session mySession;
     private Message myMessage;
 
     public Email (String recipient, String subject, String message, String from, String smptHost) {
-        myProps = new Properties();
-        myProps.put("mail.smtp.starttls.enable", USE_TLS.toString());
-        myProps.put("mail.smtp.host", smptHost);
-        myProps.put("mail.smtp.port", SMTP_PORT.toString());
+        boolean useAuth = false;
+        initProperties(smptHost, useAuth);
         mySession = Session.getInstance(myProps, null);
-
+        try {
+            makeMessage(recipient, subject, message, from);
+        }
+        catch (EmailException e) {
+            // handled inside e
+        }
     }
 
     public Email (String recipient, String subject, String message, String from, String smptHost,
                   final String username, final String password) {
-        this(recipient, subject, message, from, smptHost);
-        myProps.put("mail.smtp.auth", "true");
+        boolean useAuth = true;
+        initProperties(smptHost, useAuth);
         mySession = Session.getInstance(myProps, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication () {
                 return new PasswordAuthentication(username, password);
             }
         });
+        try {
+            makeMessage(recipient, subject, message, from);
+        }
+        catch (EmailException e) {
+            // handled inside e
+        }
     }
-    
+
+    private void initProperties (String smptHost, Boolean useAuth) {
+        myProps = new Properties();
+        myProps.put("mail.smtp.starttls.enable", USE_TLS.toString());
+        myProps.put("mail.smtp.host", smptHost);
+        myProps.put("mail.smtp.port", SMTP_PORT.toString());
+        myProps.put("mail.smtp.auth", useAuth.toString());
+    }
+
+    private void makeMessage (String recipient, String subject, String message, String from)
+                                                                                            throws EmailException {
+        try {
+            myMessage = new MimeMessage(mySession);
+            myMessage.setFrom(new InternetAddress(from));
+            myMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+            myMessage.setSubject(subject);
+            myMessage.setText(message);
+        }
+        catch (MessagingException e) {
+            throw new EmailException(BAD_PARAMS_MSG, e.getCause());
+        }
+    }
 
     @Override
     public Boolean send () {
         try {
-            Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(from));
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
-            msg.setSubject(subject);
-            msg.setText(message);
-
-            Transport.send(msg);
-
-            System.out.println(SUCCESS_MESSAGE);
+            Transport.send(myMessage);
             return true;
-
         }
         catch (MessagingException e) {
-            throw new EmailException(e);
-            return false;
+            throw new EmailException(SMTP_FAIL_MSG, e.getCause());
         }
     }
-
 }

@@ -1,11 +1,13 @@
 package communicators;
 
-import javax.mail.MessagingException;
+@SuppressWarnings("serial")
+public final class EmailException extends RuntimeException {
 
-public class EmailException extends Exception {
-
-    public EmailException (MessagingException e) {
-        // TODO Auto-generated constructor stub
+    public EmailException (String s) {
+        super(s);
     }
 
+    public EmailException (String s, Throwable cause) {
+        super(s, cause);
+    }
 }
