@@ -11,7 +11,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 
-public class Email{
+public class Email {
     private static final Integer SMTP_PORT = 587;
     private static final Boolean USE_TLS = true;
     private static final String SMTP_FAIL_MSG =
@@ -26,12 +26,7 @@ public class Email{
         boolean useAuth = false;
         initProperties(smtpHost, useAuth);
         mySession = Session.getInstance(myProps, null);
-        try {
-            makeMessage(recipient, subject, message, from);
-        }
-        catch (EmailException e) {
-            // handled inside e
-        }
+        makeMessage(recipient, subject, message, from);
     }
 
     public Email (String recipient, String subject, String message, String from, String smtpHost,
@@ -43,12 +38,7 @@ public class Email{
                 return new PasswordAuthentication(username, password);
             }
         });
-        try {
-            makeMessage(recipient, subject, message, from);
-        }
-        catch (EmailException e) {
-            // handled inside e
-        }
+        makeMessage(recipient, subject, message, from);
     }
 
     private void initProperties (String smtpHost, Boolean useAuth) {
@@ -59,8 +49,7 @@ public class Email{
         myProps.put("mail.smtp.auth", useAuth.toString());
     }
 
-    private void makeMessage (String recipient, String subject, String message, String from)
-                                                                                            throws EmailException {
+    private void makeMessage (String recipient, String subject, String message, String from) {
         try {
             myMessage = new MimeMessage(mySession);
             myMessage.setFrom(new InternetAddress(from));
@@ -69,7 +58,7 @@ public class Email{
             myMessage.setText(message);
         }
         catch (MessagingException e) {
-            throw new EmailException(BAD_PARAMS_MSG, e.getCause());
+            throw new WebCommunicatorException(BAD_PARAMS_MSG, e.getCause());
         }
     }
 
@@ -79,7 +68,7 @@ public class Email{
             return true;
         }
         catch (MessagingException e) {
-            throw new EmailException(SMTP_FAIL_MSG, e.getCause());
+            throw new WebCommunicatorException(SMTP_FAIL_MSG, e.getCause());
         }
     }
 }

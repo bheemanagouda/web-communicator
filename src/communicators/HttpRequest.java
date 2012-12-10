@@ -48,7 +48,7 @@ public class HttpRequest {
             myRequestType = requestType;
         }
         catch (MalformedURLException e) {
-            throw new HttpRequestException(BAD_URL_MSG, e.getCause());
+            throw new WebCommunicatorException(BAD_URL_MSG, e.getCause());
         }
     }
 
@@ -64,7 +64,7 @@ public class HttpRequest {
             return readResponse();
         }
         catch (IOException e) {
-            throw new HttpRequestException(FAILED_CONNECTION_MSG, e.getCause());
+            throw new WebCommunicatorException(FAILED_CONNECTION_MSG, e.getCause());
         }
         finally {
             if (myConnection != null) {
@@ -116,7 +116,7 @@ public class HttpRequest {
             }
         }
         catch (UnsupportedEncodingException e) {
-            throw new HttpRequestException(BAD_PARAMS_MSG, e.getCause());
+            throw new WebCommunicatorException(BAD_PARAMS_MSG, e.getCause());
         }
         return result;
     }
