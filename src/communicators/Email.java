@@ -11,6 +11,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 
+/**
+ * Sends emails via TLS-enabled connection. Supports SMTP servers
+ * with or without authentication.
+ * 
+ * @author Volodymyr Zavidovych
+ *
+ */
 public class Email {
     private static final Integer SMTP_PORT = 587;
     private static final Boolean USE_TLS = true;
