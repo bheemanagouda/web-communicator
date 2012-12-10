@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import communicators.Email;
 import communicators.FacebookUpdate;
-import communicators.HttpRequest;
+import communicators.Http;
 import communicators.Tweet;
 
 
@@ -22,19 +22,19 @@ public class WebCommunicator {
     }
 
     public String httpGET (String url, HashMap<String, String> params) {
-        HttpRequest get = new HttpRequest(url, params, "GET");
+        Http get = new Http(url, params, "GET");
         String response = get.send();
         return response;
     }
 
     public String httpPOST (String url, HashMap<String, String> params) {
-        HttpRequest post = new HttpRequest(url, params, "POST");
+        Http post = new Http(url, params, "POST");
         String response = post.send();
         return response;
     }
     
     public String httpPUT (String url, HashMap<String, String> params) {
-        HttpRequest post = new HttpRequest(url, params, "PUT");
+        Http post = new Http(url, params, "PUT");
         String response = post.send();
         return response;
     }

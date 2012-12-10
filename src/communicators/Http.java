@@ -26,7 +26,7 @@ import java.util.Map.Entry;
  * @author Volodymyr Zavidovych
  * 
  */
-public class HttpRequest {
+public class Http {
     private static final String BAD_URL_MSG = "Bad URL.";
     private static final String BAD_PARAMS_MSG = "Unsupported encoding of parameters.";
     private static final String FAILED_CONNECTION_MSG = "Couldn't establish connection.";
@@ -43,7 +43,7 @@ public class HttpRequest {
      * @param params Request parameters
      * @param requestType Request type (GET, POST, PUT)
      */
-    public HttpRequest (String url, HashMap<String, String> params, String requestType) {
+    public Http (String url, HashMap<String, String> params, String requestType) {
         try {
             myURL = new URL(url);
             myRequestParams = encodeParams(params);
