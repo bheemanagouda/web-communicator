@@ -39,8 +39,8 @@ public class WebCommunicator {
         return response;
     }
 
-    public boolean postFacebookUpdate (String fbMessage, String fbLogin, String fbPswd) {
-        FacebookUpdate fb = new FacebookUpdate(fbMessage, fbLogin, fbPswd);
+    public boolean postFacebookUpdate (String fbMessage, String fbAccessToken) {
+        FacebookUpdate fb = new FacebookUpdate(fbMessage, fbAccessToken);
         boolean success = fb.postUpdate();
         return success;
     }
@@ -92,9 +92,8 @@ public class WebCommunicator {
         
         // sending FB status update
         String fbMessage = "OMG it was so hilarious i literally died laughing #LOL #SWAG";
-        String fbLogin = "megachick@hotmail.com";
-        String fbPswd = "cutie777babe";
-        c.postFacebookUpdate(fbMessage, fbLogin, fbPswd);
+        String fbAccessToken = "yourfbappaccesstoken";
+        c.postFacebookUpdate(fbMessage, fbAccessToken);
         
         // sending tweet, no pin required
         // https://dev.twitter.com/docs/auth/oauth/faq
