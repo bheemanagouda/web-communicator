@@ -17,9 +17,7 @@ import java.util.Map.Entry;
 
 
 /**
- * Inspired by
- * http://www.xyzws.com/Javafaq/how-to-use-httpurlconnection-post-data
- * -to-web-server/139
+ * Inspired by http://goo.gl/ojEhB
  * 
  * Sends HTTP requests of any type, and returns response.
  * 
