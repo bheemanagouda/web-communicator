@@ -75,4 +75,4 @@ c.tweet(twMessage, twConsumerKey, twConsumerSecret, twPin);
 Comming soon
 ============
 1. OAuth 2.0 support for sending emails via smtp.google.com
-2. Posting images and videos in Facebook Status update
+2. Posting images and videos in Facebook status update

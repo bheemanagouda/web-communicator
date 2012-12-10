@@ -5,8 +5,33 @@ import communicators.HttpRequest;
 import communicators.Tweet;
 
 
+/**
+ * Java web communication API that currently supports:
+ * - Sending emails via TLS-enabled connection
+ * - Sending HTTP requests (GET, POST, PUT)
+ * - Posting Facebook updates to your public wall using Graph API
+ * - Sending Twitter updates using Twitter OAuth
+ * 
+ * GitHub: https://github.com/zavidovych/web-communicator
+ * 
+ * @author Volodymyr Zavidovych
+ * 
+ */
 public class WebCommunicator {
 
+    /**
+     * Send email via TSL-enabled connections. SMTP server requires
+     * authentication.
+     * 
+     * @param recipient Recipient email
+     * @param subject Email subject
+     * @param message Email body
+     * @param from Sender email
+     * @param smtpHost SMTP host address
+     * @param username SMTP authentication username
+     * @param password SMTP authentication password
+     * @return returns true if email was sent successfully
+     */
     public boolean sendEmail (String recipient, String subject, String message, String from,
                               String smtpHost, String username, String password) {
         Email mail = new Email(recipient, subject, message, from, smtpHost, username, password);
@@ -14,6 +39,17 @@ public class WebCommunicator {
         return success;
     }
 
+    /**
+     * Send email via TSL-enabled connections. SMTP server doesn't require
+     * authentication.
+     * 
+     * @param recipient Recipient email
+     * @param subject Email subject
+     * @param message Email body
+     * @param from Sender email
+     * @param smtpHost SMTP host address
+     * @return returns true if email was sent successfully
+     */
     public boolean sendEmail (String recipient, String subject, String message, String from,
                               String smtpHost) {
         Email mail = new Email(recipient, subject, message, from, smtpHost);
@@ -21,90 +57,88 @@ public class WebCommunicator {
         return success;
     }
 
+    /**
+     * Send GET request
+     * 
+     * @param url Request URL
+     * @param params GET request parameters
+     * @return Request response
+     */
     public String httpGET (String url, HashMap<String, String> params) {
         HttpRequest get = new HttpRequest(url, params, "GET");
         String response = get.send();
         return response;
     }
 
+    /**
+     * Send POST request
+     * 
+     * @param url Request URL
+     * @param params POST request parameters
+     * @return Request response
+     */
     public String httpPOST (String url, HashMap<String, String> params) {
         HttpRequest post = new HttpRequest(url, params, "POST");
         String response = post.send();
         return response;
     }
-    
+
+    /**
+     * Send PUT request
+     * 
+     * @param url Request URL
+     * @param params PUT request parameters
+     * @return Request response
+     */
     public String httpPUT (String url, HashMap<String, String> params) {
         HttpRequest post = new HttpRequest(url, params, "PUT");
         String response = post.send();
         return response;
     }
 
-    public boolean postFacebookUpdate (String fbMessage, String fbAccessToken) {
+    /**
+     * Post status update to your public Facebook wall.
+     * Details about token: http://goo.gl/NUyc2
+     * 
+     * @param fbMessage Status update message.
+     * @param fbAccessToken Facebook access token.
+     * @return returns ID of Facebook entity onto which update was posted.
+     */
+    public String postFacebookUpdate (String fbMessage, String fbAccessToken) {
         FacebookUpdate fb = new FacebookUpdate(fbMessage, fbAccessToken);
-        boolean success = fb.postUpdate();
-        return success;
+        String response = fb.postUpdate();
+        return response;
     }
 
-    public boolean tweet (String twMessage, String twLogin, String twPswd) {
-        Tweet tw = new Tweet(twMessage, twLogin, twPswd, "");
-        boolean success = tw.tweet();
-        return success;
-    }
-    
-    public boolean tweet (String twMessage, String twLogin, String twPswd, String twPin) {
-        Tweet tw = new Tweet(twMessage, twLogin, twPswd, twPin);
+    /**
+     * Post Twitter status update using OAuth. Pin not required
+     * Details about credentials: https://dev.twitter.com/docs/auth/oauth/faq
+     * 
+     * @param twMessage Tweet message
+     * @param twConsumerKey App consumer key
+     * @param twConsumerSecret App consumer secret
+     * @return true if status was updated successfully
+     */
+    public boolean tweet (String twMessage, String twConsumerKey, String twConsumerSecret) {
+        Tweet tw = new Tweet(twMessage, twConsumerKey, twConsumerSecret, "");
         boolean success = tw.tweet();
         return success;
     }
 
     /**
-     * @param args
+     * Post Twitter status update using OAuth. Pin required
+     * Details about credentials: https://dev.twitter.com/docs/auth/oauth/faq
+     * 
+     * @param twMessage Tweet message
+     * @param twConsumerKey App consumer key
+     * @param twConsumerSecret App consumer secret
+     * @param twPin App pin
+     * @return returns true if status was updated successfully
      */
-    public static void main (String[] args) {
-        WebCommunicator c = new WebCommunicator();
-
-        // smtp server doesn't require authentication
-        String recipient = "repicient@example.com";
-        String subject = "My subject";
-        String message = "My message body";
-        String from = "sender@example.com";
-        String smptHost = "smtp.mycompany.com";
-        c.sendEmail(recipient, subject, message, from, smptHost);
-
-        // smtp server requires authentication
-        smptHost = "smtp.google.com";
-        String username = "me@google.com";
-        String pswd = "myGooglePswd";
-        c.sendEmail(recipient, subject, message, from, smptHost, username, pswd);
-
-        // sending HTTP GET and POST requests
-        String url = "http://myservice.com/";
-        HashMap<String, String> params = new HashMap<String, String>() {
-            {
-                put("param1", "val1");
-                put("param2", "val2");
-                put("param3", "val3");
-            }
-        };
-        String getResponse = c.httpGET(url, params);
-        String postResponse = c.httpPOST(url, params);
-        String putResponse = c.httpPUT(url, params);
-        
-        // sending FB status update
-        String fbMessage = "OMG it was so hilarious i literally died laughing #LOL #SWAG";
-        String fbAccessToken = "yourfbappaccesstoken";
-        c.postFacebookUpdate(fbMessage, fbAccessToken);
-        
-        // sending tweet, no pin required
-        // https://dev.twitter.com/docs/auth/oauth/faq
-        String twMessage = "Eating breakfast! #yummy (@ IHOP) [pic]: http://4sq.com/rcgmnH ";
-        String twConsumerKey = "consumerkeyfromyourapp";
-        String twConsumerSecret = "consumersecretfromyourapp";
-        c.tweet(twMessage, twConsumerKey, twConsumerSecret);
-        
-        // sending tweet, pin required
-        String twPin = "yourapppin";
-        c.tweet(twMessage, twConsumerKey, twConsumerSecret, twPin);
-        
+    public boolean tweet (String twMessage, String twConsumerKey, String twConsumerSecret,
+                          String twPin) {
+        Tweet tw = new Tweet(twMessage, twConsumerKey, twConsumerSecret, twPin);
+        boolean success = tw.tweet();
+        return success;
     }
 }
